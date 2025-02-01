@@ -30,9 +30,26 @@ for day in days:
             data_aggregate[day][route]['passenger_ridership'].append(calculate_passenger_ridership(grouped_by_date_and_route))
 
 # Test code to print metrics for monday on route 96 and E100
-for day,route in zip(['Monday','Monday'],['96','E100']):
-    AWT_all = data_aggregate[day][route]['AWT']
-    AWT_avg = np.average([x for x in AWT_all if not np.isnan(x)])
-    print(AWT_avg)
-    data_aggregate[day][route]['kilometers_travelled']
-    data_aggregate[day][route]['passenger_ridership']
+
+columns = ["Day", "Route", "awt_min", "awt_max", "awt_avg"]
+data = []
+def to_minutes(seconds):
+    seconds = int(seconds)
+    return f"{seconds // 60}:{seconds % 60}"
+
+for day in days:
+    for route in data_aggregate[day]:
+        print(f"Processing data for: {day} on route {route}")
+        print(f"Day: {day}, Route: {route}")
+        awt_avg = to_minutes(np.mean(data_aggregate[day][route]['AWT']))
+        awt_min = to_minutes(np.min(data_aggregate[day][route]['AWT']))
+        awt_max = to_minutes(np.max(data_aggregate[day][route]['AWT']))
+        data.append([day, route, awt_min, awt_max, awt_avg])
+        print(f"Average Wait Time: {awt_avg}")
+        
+        # print(f"Kilometers Travelled: {data_aggregate[day][route]['kilometers_travelled']}")
+        # print(f"Passenger Ridership: {data_aggregate[day][route]['passenger_ridership']}")
+        print("\n")
+
+data_df = pd.DataFrame(data, columns=columns)
+data_df.to_csv('output/metrics.csv')
